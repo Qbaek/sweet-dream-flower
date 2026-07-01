@@ -1,15 +1,15 @@
 import { useState } from 'react'
 
 const videos = [
-  { id: 1, src: '/assets/videos/Sweet_Dream_Flower_01.mp4', date: '2026. 06. 01', desc: '오늘의 꽃다발 🌸', flowers: '라넌큘러스, 작약, 유칼립투스' },
-  { id: 2, src: '/assets/videos/Sweet_Dream_Flower_02.mp4', date: '2026. 05. 28', desc: '라넌큘러스 특가 입고 🌼', flowers: '라넌큘러스, 안개꽃' },
-  { id: 3, src: '/assets/videos/Sweet_Dream_Flower_03.mp4', date: '2026. 05. 20', desc: '작약 시즌 시작 🌷', flowers: '작약, 스타티스' },
-  { id: 4, src: '/assets/videos/Sweet_Dream_Flower_04.mp4', date: '2026. 05. 15', desc: '어버이날 꽃다발 💐', flowers: '카네이션, 장미' },
-  { id: 5, src: '/assets/videos/Sweet_Dream_Flower_05.mp4', date: '2026. 05. 10', desc: '스위트 드림의 봄 🌿', flowers: '튤립, 유칼립투스' },
-  { id: 6, src: '/assets/videos/Sweet_Dream_Flower_06.mp4', date: '2026. 04. 30', desc: '오늘 입고된 튤립 🌺', flowers: '튤립, 안개꽃' },
-  { id: 7, src: '/assets/videos/Sweet_Dream_Flower_07.mp4', date: '2026. 04. 22', desc: '단골 손님의 특별 주문 💕', flowers: '장미, 리시안셔스' },
-  { id: 8, src: '/assets/videos/Sweet_Dream_Flower_08.mp4', date: '2026. 04. 15', desc: '봄맞이 새 꽃 입고 🌸', flowers: '라넌큘러스, 작약' },
-  { id: 9, src: '/assets/videos/Sweet_Dream_Flower_09.mp4', date: '2026. 04. 08', desc: '종로 3가의 봄날 🍀', flowers: '거베라, 해바라기' },
+  { id: 1, src: '${import.meta.env.BASE_URL}assets/videos/Sweet_Dream_Flower_01.mp4', date: '2026. 06. 01', desc: '오늘의 꽃다발 🌸', flowers: '라넌큘러스, 작약, 유칼립투스' },
+  { id: 2, src: '${import.meta.env.BASE_URL}assets/videos/Sweet_Dream_Flower_02.mp4', date: '2026. 05. 28', desc: '라넌큘러스 특가 입고 🌼', flowers: '라넌큘러스, 안개꽃' },
+  { id: 3, src: '${import.meta.env.BASE_URL}assets/videos/Sweet_Dream_Flower_03.mp4', date: '2026. 05. 20', desc: '작약 시즌 시작 🌷', flowers: '작약, 스타티스' },
+  { id: 4, src: '${import.meta.env.BASE_URL}assets/videos/Sweet_Dream_Flower_04.mp4', date: '2026. 05. 15', desc: '어버이날 꽃다발 💐', flowers: '카네이션, 장미' },
+  { id: 5, src: '${import.meta.env.BASE_URL}assets/videos/Sweet_Dream_Flower_05.mp4', date: '2026. 05. 10', desc: '스위트 드림의 봄 🌿', flowers: '튤립, 유칼립투스' },
+  { id: 6, src: '${import.meta.env.BASE_URL}assets/videos/Sweet_Dream_Flower_06.mp4', date: '2026. 04. 30', desc: '오늘 입고된 튤립 🌺', flowers: '튤립, 안개꽃' },
+  { id: 7, src: '${import.meta.env.BASE_URL}assets/videos/Sweet_Dream_Flower_07.mp4', date: '2026. 04. 22', desc: '단골 손님의 특별 주문 💕', flowers: '장미, 리시안셔스' },
+  { id: 8, src: '${import.meta.env.BASE_URL}assets/videos/Sweet_Dream_Flower_08.mp4', date: '2026. 04. 15', desc: '봄맞이 새 꽃 입고 🌸', flowers: '라넌큘러스, 작약' },
+  { id: 9, src: '${import.meta.env.BASE_URL}assets/videos/Sweet_Dream_Flower_09.mp4', date: '2026. 04. 08', desc: '종로 3가의 봄날 🍀', flowers: '거베라, 해바라기' },
 ]
 
 function Hero() {
