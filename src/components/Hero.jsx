@@ -40,7 +40,7 @@ function Hero() {
                 className="w-full h-full object-cover"
                 muted
                 playsInline
-                preload="metadata"
+                preload="none"
               />
               <div className="absolute inset-0 bg-black/25 flex items-center justify-center">
                 <div className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center">

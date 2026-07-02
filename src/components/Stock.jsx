@@ -40,7 +40,7 @@ function Stock() {
             className="flex-shrink-0 w-[120px] border border-[#D4D0CB] rounded-xl overflow-hidden bg-white cursor-pointer"
             onClick={() => setSelected(flower)}
           >
-            <img src={flower.img} alt={flower.name} className="w-full h-[100px] object-cover" />
+            <img src={flower.img} alt={flower.name} className="w-full h-[100px] object-cover" loading="lazy" />
             <div className="p-2">
               <p className="text-[12px] font-medium text-[#2C2C2A] mb-1">{flower.name}</p>
               <div className="flex items-center gap-1">
@@ -59,7 +59,7 @@ function Stock() {
           onClick={() => setSelected(null)}
         >
           <div
-            className="w-[260px] bg-[#F9F6F2] rounded-2xl overflow-hidden border border-[#D4D0CB]"
+            className="w-[260px] bg-[#F9F6F2] rounded-2xl overflow-hidden border border-[#D4D0CB]" loading="lazy"
             onClick={(e) => e.stopPropagation()}
           >
               <img src={selected.img} alt={selected.name} className="w-full h-[180px] object-cover" />            <div className="p-4">
