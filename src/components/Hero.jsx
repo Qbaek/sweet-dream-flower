@@ -22,11 +22,8 @@ function Hero() {
   return (
     <section>
       {/* Hero 다크 영역 */}
-      <div className="bg-[#1C1C1A] w-full h-[320px] flex flex-col items-center justify-center">
-        <h1 className="text-white text-[48px] font-light leading-[1.1] tracking-[-1px] text-center m-0">
-          SWEET<br />DREAM<br />FLOWER
-        </h1>
-        <p className="text-white text-[16px] font-light mt-3">& Vamos</p>
+      <div className="pt-3 pb-6" style={{ backgroundColor: 'var(--color-bg)' }}>
+        <p className="text-[11px] tracking-[2px] mb-3 pl-4" style={{ color: 'var(--color-accent)' }}>our moment</p>
       </div>
 
       {/* our moment 그리드 */}
@@ -64,7 +61,8 @@ function Hero() {
           onClick={() => setSelected(null)}
         >
           <div
-            className="w-[280px] bg-[#F9F6F2] rounded-2xl overflow-hidden"
+            className="w-[280px] rounded-2xl overflow-hidden"
+            style={{ backgroundColor: 'var(--color-bg)' }}
             onClick={(e) => e.stopPropagation()}
           >
             <video
@@ -75,9 +73,9 @@ function Hero() {
               playsInline
             />
             <div className="p-4">
-              <p className="text-[11px] text-[#888780] mb-1">{selected.date}</p>
-              <p className="text-[13px] text-[#2C2C2A] mb-1">{selected.desc}</p>
-              <p className="text-[11px] text-[#888780]">{selected.flowers}</p>
+              <p className="text-[11px] mb-1" style={{ color: 'var(--color-accent)' }}>{selected.date}</p>
+              <p className="text-[13px] mb-1" style={{ color: 'var(--color-primary)' }}>{selected.desc}</p>
+              <p className="text-[11px]" style={{ color: 'var(--color-accent)' }}>{selected.flowers}</p>
             </div>
           </div>
         </div>

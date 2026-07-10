@@ -3,7 +3,7 @@ const members = [
     initial: 'J',
     name: 'Ji-Eun',
     role: 'FLORIST',
-    desc: '무게감 있고 책임감있는 플로리스트.\n든든하게 이 지점을 지킵니다.',
+    desc: '무게감 있고 책임감있는 플로리스트.\n든든하게 종로 3가를 지킵니다.',
     highlight: false,
   },
   {
@@ -24,11 +24,11 @@ const members = [
 
 function Member() {
   return (
-    <section className="bg-[#F9F6F2] pt-8 pb-10 px-4">
+    <section className="pt-8 pb-10 px-4" style={{ backgroundColor: 'var(--color-bg)' }}>
       {/* 섹션 헤더 */}
-      <p className="text-[10px] text-[#888780] tracking-[2px] mb-1">OUR TEAM</p>
-      <h2 className="text-[16px] font-normal text-[#2C2C2A] mb-1">저희가 함께합니다</h2>
-      <p className="text-[12px] text-[#888780] leading-relaxed mb-6">
+      <p className="text-[10px] tracking-[2px] mb-1" style={{ color: 'var(--color-accent)' }}>OUR TEAM JongNo 3Ga</p>
+      <h2 className="text-[16px] font-normal mb-1" style={{ color: 'var(--color-primary)' }}>저희가 함께합니다</h2>
+      <p className="text-[12px] leading-relaxed mb-6" style={{ color: 'var(--color-accent)' }}>
         종로 3가점을 빛내는 세 사람,<br />언제든 편하게 찾아주세요.
       </p>
 
@@ -37,31 +37,35 @@ function Member() {
         {members.map((m) => (
           <div
             key={m.initial}
-            className={`flex items-center gap-4 p-4 rounded-2xl border ${
-              m.highlight
-                ? 'bg-[#F1EFE8] border-[#C4C0BB]'
-                : 'bg-white border-[#D4D0CB]'
-            }`}
+            className="flex items-center gap-4 p-4 rounded-2xl border"
+            style={{
+              backgroundColor: m.highlight ? 'var(--color-surface)' : 'white',
+              borderColor: m.highlight ? 'var(--color-accent)' : 'var(--color-surface)',
+            }}
           >
-            <div className={`w-16 h-16 rounded-full flex-shrink-0 flex items-center justify-center border ${
-              m.highlight ? 'bg-white border-[#D4D0CB]' : 'bg-[#F1EFE8] border-[#D4D0CB]'
-            }`}>
-              <span className="text-[20px] font-light text-[#2C2C2A]">{m.initial}</span>
+            <div
+              className="w-16 h-16 rounded-full flex-shrink-0 flex items-center justify-center border"
+              style={{
+                backgroundColor: m.highlight ? 'white' : 'var(--color-surface)',
+                borderColor: 'var(--color-surface)',
+              }}
+            >
+              <span className="text-[20px] font-light" style={{ color: 'var(--color-primary)' }}>{m.initial}</span>
             </div>
             <div className="flex-1">
-              <p className={`text-[10px] text-[#888780] tracking-[2px] mb-0.5`}>{m.role}</p>
-              <p className={`font-medium text-[#2C2C2A] mb-1 ${m.highlight ? 'text-[15px]' : 'text-[13px]'}`}>{m.name}</p>
-              <p className="text-[11px] text-[#888780] leading-relaxed whitespace-pre-line">{m.desc}</p>
+              <p className="text-[10px] tracking-[2px] mb-0.5" style={{ color: 'var(--color-accent)' }}>{m.role}</p>
+              <p className={`font-medium mb-1 ${m.highlight ? 'text-[15px]' : 'text-[13px]'}`} style={{ color: 'var(--color-primary)' }}>{m.name}</p>
+              <p className="text-[11px] leading-relaxed whitespace-pre-line" style={{ color: 'var(--color-accent)' }}>{m.desc}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* 마무리 문구 */}
-      <div className="bg-[#F1EFE8] border border-[#D4D0CB] rounded-2xl p-4 text-center mb-6">
-        <p className="text-[13px] font-medium text-[#2C2C2A] mb-1">언제든 찾아주셔도 좋습니다 🌸</p>
-        <p className="text-[11px] text-[#888780] leading-relaxed">저희 세 사람이 정성껏 맞이하겠습니다.</p>
-        <p className="text-[11px] text-[#888780]">Sweet Dream Flower · 종로 3가</p>
+      <div className="rounded-2xl p-4 text-center mb-6 border" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-surface)' }}>
+        <p className="text-[13px] font-medium mb-1" style={{ color: 'var(--color-primary)' }}>언제든 찾아주셔도 좋습니다 🌸</p>
+        <p className="text-[11px] leading-relaxed" style={{ color: 'var(--color-accent)' }}>저희 세 사람이 정성껏 맞이하겠습니다.</p>
+        <p className="text-[11px]" style={{ color: 'var(--color-accent)' }}>Sweet Dream Flower · 종로 3가</p>
       </div>
     </section>
   )

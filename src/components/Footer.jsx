@@ -1,7 +1,7 @@
 function Footer() {
   return (
-    <footer className="bg-[#F1EFE8] border-t border-[#D4D0CB] py-4 text-center">
-      <p className="text-[11px] text-[#888780]">© 2026 Sweet Dream Flower · Jongno 3-ga, Seoul.</p>
+    <footer className="py-4 text-center border-t" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-surface)' }}>
+      <p className="text-[11px]" style={{ color: 'var(--color-accent)' }}>© 2026 Sweet Dream Flower · Jongno 3-ga, Seoul.</p>
     </footer>
   )
 }
