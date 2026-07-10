@@ -1,1 +1,36 @@
+/* tailwind css 추가 */
 @import "tailwindcss";
+
+/* spoqa han sans otf 추가영역 */
+@font-face {
+  font-family: 'Spoqa Han Sans Neo';
+  src: url('/assets/fonts/SpoqaHanSansNeo-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Spoqa Han Sans Neo';
+  src: url('/assets/fonts/SpoqaHanSansNeo-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Spoqa Han Sans Neo';
+  src: url('/assets/fonts/SpoqaHanSansNeo-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Spoqa Han Sans Neo';
+  src: url('/assets/fonts/SpoqaHanSansNeo-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* body 전체영역 적용 */
+body {
+  font-family: 'Spoqa Han Sans Neo', sans-serif;
+}
