@@ -6,10 +6,14 @@ import Reservation from './components/Reservation'
 import Member from './components/Member'
 import Footer from './components/Footer'
 import { themes } from './data/themeData'
+import { useScrollLock } from './hooks/useScrollLock'
+
 
 function App() {
   const [currentTheme, setCurrentTheme] = useState(themes[0])
   const [showThemeModal, setShowThemeModal] = useState(false)
+
+  useScrollLock(showThemeModal)
 
   const scrollTo = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })

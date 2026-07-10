@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import { bouquetList } from '../data/flowerData'
+import { useScrollLock } from '../hooks/useScrollLock'
+
+// 부케 데이터 추가
 const bouquets = [
   { id: 1, name: '봄 웨딩 부케', price: '80,000원' },
   { id: 2, name: '미니 꽃다발', price: '35,000원' },
@@ -19,6 +22,8 @@ function Reservation() {
 
   const handleSubmit = () => setShowAlert(true)
   const handleConfirm = () => { setShowAlert(false); setConfirmed(true) }
+
+  useScrollLock(showBouquetModal || showAlert || confirmed)
 
   if (confirmed) {
     return (

@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { stockData } from '../data/flowerData'
+import { useScrollLock } from '../hooks/useScrollLock'
+
 
 const tabs = ['메인꽃', '필러꽃', '꽃다발', '화분']
 
 function Stock() {
   const [activeTab, setActiveTab] = useState('메인꽃')
   const [selected, setSelected] = useState(null)
+  useScrollLock(!!selected)
 
   return (
     <section className="bg-[#F9F6F2] pt-8 pb-6">

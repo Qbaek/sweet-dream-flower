@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { useScrollLock } from '../hooks/useScrollLock'
 
+// 비디오 파일 생성.
 const videos = [
   { id: 1, src: 'https://res.cloudinary.com/smn0s6kv/video/upload/q_auto,vc_auto/v1782958037/sweet_dream_flower_01_qpl2vm.mp4', thumbnail: 'https://res.cloudinary.com/smn0s6kv/video/upload/so_0/q_auto,vc_auto/v1782958037/sweet_dream_flower_01_qpl2vm.jpg', date: '2026. 06. 01', desc: '오늘의 꽃다발 🌸', flowers: '라넌큘러스, 작약, 유칼립투스' },
   { id: 2, src: 'https://res.cloudinary.com/smn0s6kv/video/upload/q_auto,vc_auto/v1782958045/sweet_dream_flower_02_i0w3dz.mp4', thumbnail: 'https://res.cloudinary.com/smn0s6kv/video/upload/so_0/q_auto,vc_auto/v1782958045/sweet_dream_flower_02_i0w3dz.jpg', date: '2026. 05. 28', desc: '라넌큘러스 특가 입고 🌼', flowers: '라넌큘러스, 안개꽃' },
@@ -14,6 +16,8 @@ const videos = [
 
 function Hero() {
   const [selected, setSelected] = useState(null)
+  //
+  useScrollLock(!!selected)
 
   return (
     <section>
