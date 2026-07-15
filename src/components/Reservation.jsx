@@ -11,53 +11,63 @@ function Reservation() {
   const [confirmed, setConfirmed] = useState(false)
 
   const handleSubmit = () => setShowAlert(true)
-  const handleConfirm = () => { setShowAlert(false); setConfirmed(true) }
-
+  const handleConfirm = () => {
+    setShowAlert(false)
+    setConfirmed(true)
+    // 예약완료 될 때, 화면이 예약완료 페이지에 맞게끔 이동.
+    setTimeout(() => {
+      document.getElementById('reservation')?.scrollIntoView({ behavior: 'smooth' })
+    }, 100)
+  }
   useScrollLock(showBouquetModal || showAlert || confirmed)
 
+  // 예약완료 화면
   if (confirmed) {
     return (
-      <section className="pt-8 pb-10 px-4" style={{ backgroundColor: 'var(--color-bg)' }}>
-        <div className="flex flex-col items-center mb-6">
-          <div className="w-14 h-14 rounded-full border flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-surface)' }}>
-            <span className="text-2xl" style={{ color: 'var(--color-primary)' }}>✓</span>
-          </div>
-          <h2 className="text-[17px] font-medium mb-2" style={{ color: 'var(--color-primary)' }}>예약이 완료되었습니다</h2>
-          <p className="text-[12px] text-center leading-relaxed" style={{ color: 'var(--color-accent)' }}>입금 확인 후 최종 확정됩니다.<br />감사합니다 🌸</p>
-        </div>
-
-        <div className="rounded-xl overflow-hidden mb-4 border" style={{ borderColor: 'var(--color-surface)' }}>
-          <div className="px-4 py-2.5 text-[11px]" style={{ backgroundColor: 'var(--color-surface)', color: 'var(--color-accent)' }}>예약 번호 · #SDF-20260705-001</div>
-          {[
-            ['성함', form.name || '김민지'],
-            ['연락처', form.contact || '010-1234-5678'],
-            ['수령 방법', form.pickup],
-            ['날짜·시간', `${form.date || '2026.07.05'} · ${form.time || '14:00'}`],
-            ['구성', form.bouquet?.name || '라넌큘러스 부케'],
-          ].map(([key, val], i, arr) => (
-            <div key={key} className={`flex justify-between px-4 py-2.5 text-[12px] ${i < arr.length - 1 ? 'border-b' : ''}`} style={{ borderColor: 'var(--color-surface)' }}>
-              <span style={{ color: 'var(--color-accent)' }}>{key}</span>
-              <span className="font-medium" style={{ color: 'var(--color-primary)' }}>{val}</span>
+      <div className="fixed inset-0 z-40 overflow-y-auto" style={{ backgroundColor: 'var(--color-bg)' }}>
+        <div className="min-h-full flex flex-col justify-center px-4 py-8 max-w-[390px] mx-auto">
+          <div className="flex flex-col items-center mb-6">
+            <div className="w-14 h-14 rounded-full border flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-surface)' }}>
+              <span className="text-2xl" style={{ color: 'var(--color-primary)' }}>✓</span>
             </div>
-          ))}
-        </div>
+            <h2 className="text-[17px] font-medium mb-2" style={{ color: 'var(--color-primary)' }}>예약이 완료되었습니다</h2>
+            <p className="text-[12px] text-center leading-relaxed" style={{ color: 'var(--color-accent)' }}>입금 확인 후 최종 확정됩니다.<br />감사합니다 🌸</p>
+          </div>
 
-        <div className="rounded-xl px-4 py-3 text-[11px] leading-relaxed mb-4 border" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-surface)', color: 'var(--color-accent)' }}>
-          입금 계좌: 카카오뱅크 000-0000-0000 (스위트드림)<br />
-          예약금 10,000원 입금 후 확정 문자가 발송됩니다.
-        </div>
+          <div className="rounded-xl overflow-hidden mb-4 border" style={{ borderColor: 'var(--color-surface)' }}>
+            <div className="px-4 py-2.5 text-[11px]" style={{ backgroundColor: 'var(--color-surface)', color: 'var(--color-accent)' }}>예약 번호 · #SDF-20260705-001</div>
+            {[
+              ['성함', form.name || '김민지'],
+              ['연락처', form.contact || '010-1234-5678'],
+              ['수령 방법', form.pickup],
+              ['날짜·시간', `${form.date || '2026.07.05'} · ${form.time || '14:00'}`],
+              ['구성', form.bouquet?.name || '라넌큘러스 부케'],
+            ].map(([key, val], i, arr) => (
+              <div key={key} className={`flex justify-between px-4 py-2.5 text-[12px] ${i < arr.length - 1 ? 'border-b' : ''}`} style={{ borderColor: 'var(--color-surface)' }}>
+                <span style={{ color: 'var(--color-accent)' }}>{key}</span>
+                <span className="font-medium" style={{ color: 'var(--color-primary)' }}>{val}</span>
+              </div>
+            ))}
+          </div>
 
-        <button
-          onClick={() => setConfirmed(false)}
-          className="w-full py-3.5 text-[14px] font-medium rounded-lg"
-          style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-bg)' }}
-        >
-          처음으로 돌아가기
-        </button>
-      </section>
+          <div className="rounded-xl px-4 py-3 text-[11px] leading-relaxed mb-4 border" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-surface)', color: 'var(--color-accent)' }}>
+            입금 계좌: 카카오뱅크 000-0000-0000 (스위트드림)<br />
+            예약금 10,000원 입금 후 확정 문자가 발송됩니다.
+          </div>
+
+          <button
+            onClick={() => setConfirmed(false)}
+            className="w-full py-3.5 text-[14px] font-medium rounded-lg"
+            style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-bg)' }}
+          >
+            처음으로 돌아가기
+          </button>
+        </div>
+      </div>
     )
   }
 
+  // reservation 화면
   return (
     <section className="pt-8 pb-10 px-4" style={{ backgroundColor: 'var(--color-bg)' }}>
       <p className="text-[10px] tracking-[2px] mb-1" style={{ color: 'var(--color-accent)' }}>RESERVATION</p>
