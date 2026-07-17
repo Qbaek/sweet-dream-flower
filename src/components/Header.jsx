@@ -1,7 +1,7 @@
 function Header({ theme, onThemeClick }) {
   return (
     <header 
-      className="fixed top-0 left-0 right-0 max-w-[390px] mx-auto h-14 flex items-center justify-center z-50 border-b"
+      className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[390px] h-14 flex items-center justify-center z-50 border-b"
       style={{ backgroundColor: theme?.bg || 'var(--color-bg)', borderColor: theme?.surface || 'var(--color-surface)' }}
     >
       <span 
