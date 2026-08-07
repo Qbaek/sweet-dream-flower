@@ -1,67 +1,102 @@
 import { useState, useEffect } from 'react'
-import { stockData } from '../data/flowerData'
+import { supabase } from '../lib/supabase'
 import { useScrollLock } from '../hooks/useScrollLock'
 
 const tabs = ['메인꽃', '필러꽃', '꽃다발', '화분']
 
-// localStorage 키 이름
-const STORAGE_KEY = 'sdf_stock'
-// 24시간 후 재고 리셋 (밀리초 단위)
-const RESET_INTERVAL = 24 * 60 * 60 * 1000
 // 30분마다 재고 1개 감소 (밀리초 단위)
 const DECREASE_INTERVAL = 30 * 60 * 1000
-
-// 재고 초기화 함수
-function initStock() {
-  // localStorage에 저장된 데이터 불러오기
-  const saved = localStorage.getItem(STORAGE_KEY)
-  if (saved) {
-    const { data, timestamp } = JSON.parse(saved)
-    // 마지막 저장 시간이 24시간 이내면 저장된 데이터 사용
-    if (Date.now() - timestamp < RESET_INTERVAL) {
-      return data
-    }
-  }
-  // 저장된 데이터 없거나 24시간 지났으면 원래 데이터로 리셋
-  const initial = {}
-  Object.entries(stockData).forEach(([tab, flowers]) => {
-    initial[tab] = flowers.map(f => ({ ...f }))
-  })
-  // 초기화된 데이터와 현재 시간 저장
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ data: initial, timestamp: Date.now() }))
-  return initial
-}
 
 function Stock() {
   const [activeTab, setActiveTab] = useState('메인꽃')
   const [selected, setSelected] = useState(null)
-  // localStorage에서 불러온 재고 데이터로 초기화
-  const [stock, setStock] = useState(initStock)
+  // Supabase에서 불러온 재고 데이터 — 탭별로 분류된 객체
+  const [stock, setStock] = useState({})
+  // 데이터 로딩 상태
+  const [loading, setLoading] = useState(true)
   useScrollLock(!!selected)
 
+  // Supabase flowers 테이블에서 전체 데이터 불러오는 함수
+  async function fetchStock() {
+    const { data, error } = await supabase
+      .from('flowers')
+      .select('*')
+      .order('id')
+
+    if (error) {
+      console.error('재고 불러오기 실패:', error)
+      return
+    }
+
+    // 불러온 데이터를 탭별로 분류
+    const grouped = {}
+    tabs.forEach(tab => { grouped[tab] = [] })
+    data.forEach(item => {
+      if (grouped[item.tab]) {
+        grouped[item.tab].push(item)
+      }
+    })
+    setStock(grouped)
+    setLoading(false)
+  }
+
+  // Supabase Realtime 구독 — flowers 테이블 변경 시 자동으로 데이터 갱신
+useEffect(() => {
+  const channel = supabase
+    .channel('flowers-changes')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'flowers' },
+      () => {
+        // 변경 감지 시 데이터 다시 불러오기
+        fetchStock()
+      }
+    )
+    .subscribe()
+
+  // 컴포넌트 언마운트 시 구독 해제
+  return () => {
+    supabase.removeChannel(channel)
+  }
+}, [])
+
+  // 컴포넌트 마운트 시 최초 1회 데이터 불러오기
   useEffect(() => {
-    // 30분마다 재고 1개씩 감소하는 인터벌 설정
-    const interval = setInterval(() => {
-      setStock(prev => {
-        const updated = { ...prev }
-        // 모든 탭의 모든 꽃 재고 1개씩 감소 (최소 0)
-        Object.keys(updated).forEach(tab => {
-          updated[tab] = updated[tab].map(f => ({
-            ...f,
-            stock: Math.max(0, f.stock - 1)
-          }))
-        })
-        // 변경된 재고 localStorage에 저장 (타임스탬프는 유지)
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          data: updated,
-          timestamp: JSON.parse(localStorage.getItem(STORAGE_KEY)).timestamp
-        }))
-        return updated
-      })
+    fetchStock()
+  }, [])
+
+  // 30분마다 재고 1개씩 감소 후 DB 업데이트
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      // 모든 탭의 꽃 데이터 순회
+      for (const tab of tabs) {
+        const flowers = stock[tab] || []
+        for (const flower of flowers) {
+          // 재고가 0보다 클 때만 감소
+          if (flower.stock > 0) {
+            await supabase
+              .from('flowers')
+              .update({ stock: flower.stock - 1 })
+              .eq('id', flower.id)
+          }
+        }
+      }
+      // 업데이트 후 최신 데이터 다시 불러오기
+      fetchStock()
     }, DECREASE_INTERVAL)
+
     // 컴포넌트 언마운트 시 인터벌 정리
     return () => clearInterval(interval)
-  }, [])
+  }, [stock])
+
+  // 데이터 로딩 중 표시
+  if (loading) {
+    return (
+      <section className="pt-8 pb-6 px-4" style={{ backgroundColor: 'var(--color-bg)' }}>
+        <p className="text-[13px]" style={{ color: 'var(--color-accent)' }}>재고 불러오는 중...</p>
+      </section>
+    )
+  }
 
   return (
     <section className="pt-8 pb-6" style={{ backgroundColor: 'var(--color-bg)' }}>
@@ -90,7 +125,7 @@ function Stock() {
 
       {/* 꽃 카드 가로 스크롤 */}
       <div className="flex gap-3 overflow-x-auto px-4 scrollbar-hide pb-2">
-        {stock[activeTab].map((flower) => (
+        {(stock[activeTab] || []).map((flower) => (
           <div
             key={flower.id}
             className="flex-shrink-0 w-[120px] rounded-xl overflow-hidden cursor-pointer border"
@@ -101,12 +136,11 @@ function Stock() {
             <div className="p-2">
               <p className="text-[12px] font-medium mb-1" style={{ color: 'var(--color-primary)' }}>{flower.name}</p>
               <div className="flex items-center gap-1">
-                {/* 재고 0이면 품절 표시, 아니면 재고 수량 표시 */}
+                {/* 재고 0이면 품절, 3개 이하 빨강, 7개 이하 노랑, 그 이상 초록 */}
                 {flower.stock === 0 ? (
                   <p className="text-[11px] font-medium text-red-400">품절</p>
                 ) : (
                   <>
-                    {/* 재고 3개 이하 빨강, 7개 이하 노랑, 그 이상 초록 */}
                     <div className={`w-1.5 h-1.5 rounded-full ${flower.stock <= 3 ? 'bg-red-400' : flower.stock <= 7 ? 'bg-yellow-400' : 'bg-green-400'}`} />
                     <p className="text-[11px]" style={{ color: 'var(--color-accent)' }}>재고 {flower.stock}개</p>
                   </>
