@@ -42,3 +42,45 @@ body {
   --color-surface: #F7E6EA;
   --color-accent: #B07A88;
 }
+
+/* react-datepicker 커스텀 스타일 */
+.react-datepicker {
+  border-color: var(--color-surface) !important;
+  font-family: 'Spoqa Han Sans Neo', sans-serif !important;
+}
+
+.react-datepicker__header {
+  background-color: var(--color-surface) !important;
+  border-bottom-color: var(--color-surface) !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name,
+.react-datepicker__time-name {
+  color: var(--color-primary) !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: var(--color-surface) !important;
+  color: var(--color-primary) !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__time-list-item--selected {
+  background-color: var(--color-primary) !important;
+  color: var(--color-bg) !important;
+}
+
+.react-datepicker__day--today {
+  color: var(--color-primary) !important;
+  font-weight: 600 !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: var(--color-primary) !important;
+}
+
+.react-datepicker__time-list-item:hover {
+  background-color: var(--color-surface) !important;
+  color: var(--color-primary) !important;
+}

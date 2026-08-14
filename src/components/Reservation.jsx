@@ -1,10 +1,14 @@
 import { useState } from 'react'
 import { bouquetList } from '../data/flowerData'
 import { useScrollLock } from '../hooks/useScrollLock'
+// 달력 css 수정
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import { ko } from 'date-fns/locale'
 
 function Reservation() {
   const [form, setForm] = useState({
-    name: '', contact: '', pickup: '픽업', date: '', time: '', bouquet: null, request: ''
+  name: '', contact: '', pickup: '픽업', date: null, time: '', bouquet: null, request: ''
   })
   const [showBouquetModal, setShowBouquetModal] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
@@ -123,18 +127,26 @@ function Reservation() {
       <div className="mb-4">
         <p className="text-[11px] mb-1.5" style={{ color: 'var(--color-accent)' }}>받을 날짜 및 시간</p>
         <div className="flex gap-2">
-          <input
-            type="date"
-            value={form.date}
-            onChange={(e) => setForm({ ...form, date: e.target.value })}
-            className="flex-1 h-11 px-3.5 border rounded-lg text-[13px] bg-white outline-none"
+          <DatePicker
+            selected={form.date}
+            onChange={(date) => setForm({ ...form, date })}
+            locale={ko}
+            dateFormat="yyyy.MM.dd"
+            placeholderText="날짜 선택"
+            minDate={new Date()}
+            className="flex-1 w-full h-11 px-3.5 border rounded-lg text-[13px] bg-white outline-none"
             style={{ borderColor: 'var(--color-surface)', color: 'var(--color-primary)' }}
           />
-          <input
-            type="time"
-            value={form.time}
-            onChange={(e) => setForm({ ...form, time: e.target.value })}
-            className="flex-1 h-11 px-3.5 border rounded-lg text-[13px] bg-white outline-none"
+          <DatePicker
+            selected={form.time}
+            onChange={(time) => setForm({ ...form, time })}
+            showTimeSelect
+            showTimeSelectOnly
+            timeIntervals={30}
+            timeCaption="시간"
+            dateFormat="HH:mm"
+            placeholderText="시간 선택"
+            className="flex-1 w-full h-11 px-3.5 border rounded-lg text-[13px] bg-white outline-none"
             style={{ borderColor: 'var(--color-surface)', color: 'var(--color-primary)' }}
           />
         </div>
