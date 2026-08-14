@@ -124,19 +124,17 @@ function Reservation() {
         <p className="text-[11px] mb-1.5" style={{ color: 'var(--color-accent)' }}>받을 날짜 및 시간</p>
         <div className="flex gap-2">
           <input
-            type="text"
-            placeholder="날짜"
+            type="date"
             value={form.date}
             onChange={(e) => setForm({ ...form, date: e.target.value })}
-            className="flex-1 h-11 px-3.5 border rounded-lg text-[13px] bg-white placeholder-[#C4C0BB] outline-none"
+            className="flex-1 h-11 px-3.5 border rounded-lg text-[13px] bg-white outline-none"
             style={{ borderColor: 'var(--color-surface)', color: 'var(--color-primary)' }}
           />
           <input
-            type="text"
-            placeholder="시간"
+            type="time"
             value={form.time}
             onChange={(e) => setForm({ ...form, time: e.target.value })}
-            className="flex-1 h-11 px-3.5 border rounded-lg text-[13px] bg-white placeholder-[#C4C0BB] outline-none"
+            className="flex-1 h-11 px-3.5 border rounded-lg text-[13px] bg-white outline-none"
             style={{ borderColor: 'var(--color-surface)', color: 'var(--color-primary)' }}
           />
         </div>
