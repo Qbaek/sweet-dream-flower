@@ -1,37 +1,96 @@
 import { useState } from 'react'
 import { bouquetList } from '../data/flowerData'
-import { useScrollLock } from '../hooks/useScrollLock'
-// 달력 css 수정
+import { useReservationScrollLock } from '../hooks/useReservationScrollLock'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { ko } from 'date-fns/locale'
+import { format } from 'date-fns'
+
+// 이메일 유효성 검사
+function isValidEmail(email) {
+  const validDomains = ['naver.com', 'hanmail.com', 'kakao.com', 'nate.com', 'gmail.com', 'daum.net', 'hotmail.com', 'yahoo.com']
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(email)) return false
+  const domain = email.split('@')[1]
+  return validDomains.includes(domain)
+}
+
+// 연락처 유효성 검사 — 숫자 11자리 or 유효한 이메일
+function isValidContact(contact) {
+  const phoneRegex = /^\d{11}$/
+  return phoneRegex.test(contact.replace(/-/g, '')) || isValidEmail(contact)
+}
 
 function Reservation() {
   const [form, setForm] = useState({
-  name: '', contact: '', pickup: '픽업', date: null, time: '', bouquet: null, request: ''
+    name: '', contact: '', pickup: '픽업', date: null, time: null, bouquet: null, request: ''
   })
   const [showBouquetModal, setShowBouquetModal] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
+  const [validationAlert, setValidationAlert] = useState('')
 
-  const handleSubmit = () => setShowAlert(true)
+  const handleSubmit = () => {
+    if (!form.name.trim()) {
+      setValidationAlert('성함을 입력해주세요.')
+      return
+    }
+    if (!form.contact.trim()) {
+      setValidationAlert('연락처를 입력해주세요.')
+      return
+    }
+    if (!isValidContact(form.contact)) {
+      setValidationAlert('유효한 연락처가 아닙니다.\n휴대폰 번호 11자리 또는\n올바른 이메일을 입력해주세요.')
+      return
+    }
+    if (!form.date) {
+      setValidationAlert('받을 날짜를 선택해주세요.')
+      return
+    }
+    if (!form.time) {
+      setValidationAlert('받을 시간을 선택해주세요.')
+      return
+    }
+    setShowAlert(true)
+  }
+
   const handleConfirm = () => {
     setShowAlert(false)
     setConfirmed(true)
-    // 예약완료 될 때, 화면이 예약완료 페이지에 맞게끔 이동.
-    setTimeout(() => {
-      document.getElementById('reservation')?.scrollIntoView({ behavior: 'smooth' })
-    }, 100)
   }
-  useScrollLock(showBouquetModal || showAlert || confirmed)
+
+  // 성함 입력 — 숫자 입력 시 alert
+  const handleNameChange = (e) => {
+    const value = e.target.value
+    if (/\d/.test(value)) {
+      setValidationAlert('성함에는 숫자가 들어갈 수 없습니다.')
+      return
+    }
+    setForm({ ...form, name: value })
+  }
+
+  // 꽃다발 선택 — 스크롤 위치 유지
+  const handleBouquetSelect = (b) => {
+    const scrollY = window.scrollY
+    setForm({ ...form, bouquet: b })
+    setShowBouquetModal(false)
+    requestAnimationFrame(() => {
+      window.scrollTo(0, scrollY)
+    })
+  }
+
+  useReservationScrollLock(showBouquetModal || showAlert || confirmed || !!validationAlert)
+
+  const formattedDate = form.date ? format(form.date, 'yyyy.MM.dd') : '날짜 미선택'
+  const formattedTime = form.time ? format(form.time, 'HH:mm') : '시간 미선택'
 
   // 예약완료 화면
   if (confirmed) {
     return (
       <div className="fixed inset-0 z-40 overflow-y-auto" style={{ backgroundColor: 'var(--color-bg)' }}>
-        <div className="min-h-full flex flex-col justify-center px-4 py-8 max-w-[390px] mx-auto">
+        <div className="min-h-full flex flex-col justify-center px-4 py-16 max-w-[390px] mx-auto">
           <div className="flex flex-col items-center mb-6">
-            <div className="w-14 h-14 rounded-full border flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-surface)' }}>
+            <div className="w-14 h-14 rounded-full border flex items-center justify-center mb-4 mt-8 flex-shrink-0" style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-surface)' }}>
               <span className="text-2xl" style={{ color: 'var(--color-primary)' }}>✓</span>
             </div>
             <h2 className="text-[17px] font-medium mb-2" style={{ color: 'var(--color-primary)' }}>예약이 완료되었습니다</h2>
@@ -39,17 +98,18 @@ function Reservation() {
           </div>
 
           <div className="rounded-xl overflow-hidden mb-4 border" style={{ borderColor: 'var(--color-surface)' }}>
-            <div className="px-4 py-2.5 text-[11px]" style={{ backgroundColor: 'var(--color-surface)', color: 'var(--color-accent)' }}>예약 번호 · #SDF-20260705-001</div>
+            <div className="px-4 py-2.5 text-[11px]" style={{ backgroundColor: 'var(--color-surface)', color: 'var(--color-accent)' }}>예약 번호 · #SDF-{Date.now().toString().slice(-6)}</div>
             {[
-              ['성함', form.name || '김민지'],
-              ['연락처', form.contact || '010-1234-5678'],
+              ['성함', form.name],
+              ['연락처', form.contact],
               ['수령 방법', form.pickup],
-              ['날짜·시간', `${form.date || '2026.07.05'} · ${form.time || '14:00'}`],
-              ['구성', form.bouquet?.name || '라넌큘러스 부케'],
+              ['날짜·시간', `${formattedDate} · ${formattedTime}`],
+              ['구성', form.bouquet?.name || '선택 안함'],
+              ['요청 사항', form.request || '없음'],
             ].map(([key, val], i, arr) => (
               <div key={key} className={`flex justify-between px-4 py-2.5 text-[12px] ${i < arr.length - 1 ? 'border-b' : ''}`} style={{ borderColor: 'var(--color-surface)' }}>
                 <span style={{ color: 'var(--color-accent)' }}>{key}</span>
-                <span className="font-medium" style={{ color: 'var(--color-primary)' }}>{val}</span>
+                <span className="font-medium text-right max-w-[200px]" style={{ color: 'var(--color-primary)' }}>{val}</span>
               </div>
             ))}
           </div>
@@ -71,7 +131,6 @@ function Reservation() {
     )
   }
 
-  // reservation 화면
   return (
     <section className="pt-8 pb-10 px-4" style={{ backgroundColor: 'var(--color-bg)' }}>
       <p className="text-[10px] tracking-[2px] mb-1" style={{ color: 'var(--color-accent)' }}>RESERVATION</p>
@@ -84,7 +143,7 @@ function Reservation() {
           type="text"
           placeholder="이름을 입력해주세요"
           value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          onChange={handleNameChange}
           className="w-full h-11 px-3.5 border rounded-lg text-[13px] bg-white placeholder-[#C4C0BB] outline-none"
           style={{ borderColor: 'var(--color-surface)', color: 'var(--color-primary)' }}
         />
@@ -123,33 +182,36 @@ function Reservation() {
         </div>
       </div>
 
-      {/* 날짜 및 시간 */}
+      {/* 날짜 선택 */}
       <div className="mb-4">
-        <p className="text-[11px] mb-1.5" style={{ color: 'var(--color-accent)' }}>받을 날짜 및 시간</p>
-        <div className="flex gap-2">
-          <DatePicker
-            selected={form.date}
-            onChange={(date) => setForm({ ...form, date })}
-            locale={ko}
-            dateFormat="yyyy.MM.dd"
-            placeholderText="날짜 선택"
-            minDate={new Date()}
-            className="flex-1 w-full h-11 px-3.5 border rounded-lg text-[13px] bg-white outline-none"
-            style={{ borderColor: 'var(--color-surface)', color: 'var(--color-primary)' }}
-          />
-          <DatePicker
-            selected={form.time}
-            onChange={(time) => setForm({ ...form, time })}
-            showTimeSelect
-            showTimeSelectOnly
-            timeIntervals={30}
-            timeCaption="시간"
-            dateFormat="HH:mm"
-            placeholderText="시간 선택"
-            className="flex-1 w-full h-11 px-3.5 border rounded-lg text-[13px] bg-white outline-none"
-            style={{ borderColor: 'var(--color-surface)', color: 'var(--color-primary)' }}
-          />
-        </div>
+        <p className="text-[11px] mb-1.5" style={{ color: 'var(--color-accent)' }}>받을 날짜</p>
+        <DatePicker
+          selected={form.date}
+          onChange={(date) => setForm({ ...form, date })}
+          locale={ko}
+          dateFormat="yyyy.MM.dd"
+          placeholderText="날짜 선택"
+          minDate={new Date()}
+          className="w-full h-11 px-3.5 border rounded-lg text-[13px] bg-white outline-none"
+          wrapperClassName="w-full"
+        />
+      </div>
+
+      {/* 시간 선택 */}
+      <div className="mb-4">
+        <p className="text-[11px] mb-1.5" style={{ color: 'var(--color-accent)' }}>받을 시간</p>
+        <DatePicker
+          selected={form.time}
+          onChange={(time) => setForm({ ...form, time })}
+          showTimeSelect
+          showTimeSelectOnly
+          timeIntervals={30}
+          timeCaption="시간"
+          dateFormat="HH:mm"
+          placeholderText="시간 선택"
+          className="w-full h-11 px-3.5 border rounded-lg text-[13px] bg-white outline-none"
+          wrapperClassName="w-full"
+        />
       </div>
 
       {/* 원하는 구성 */}
@@ -192,6 +254,26 @@ function Reservation() {
         예약 신청하기
       </button>
 
+      {/* 유효성 검사 alert 모달 */}
+      {validationAlert && (
+        <div className="fixed inset-0 bg-black/45 z-50 flex items-center justify-center">
+          <div className="w-[260px] rounded-2xl overflow-hidden border" style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-surface)' }}>
+            <div className="px-4 pt-5 pb-4 text-center">
+              <p className="text-[12px] leading-relaxed whitespace-pre-line" style={{ color: 'var(--color-accent)' }}>{validationAlert}</p>
+            </div>
+            <div className="flex border-t" style={{ borderColor: 'var(--color-surface)' }}>
+              <button
+                onClick={() => setValidationAlert('')}
+                className="flex-1 py-3 text-[13px] font-medium"
+                style={{ color: 'var(--color-primary)' }}
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 꽃다발 선택 모달 */}
       {showBouquetModal && (
         <div
@@ -211,7 +293,7 @@ function Reservation() {
               {bouquetList.map((b) => (
                 <div
                   key={b.id}
-                  onClick={() => { setForm({ ...form, bouquet: b }); setShowBouquetModal(false) }}
+                  onClick={() => handleBouquetSelect(b)}
                   className="rounded-xl overflow-hidden cursor-pointer border"
                   style={{ borderColor: form.bouquet?.id === b.id ? 'var(--color-primary)' : 'var(--color-surface)', borderWidth: form.bouquet?.id === b.id ? '1.5px' : '1px' }}
                 >
