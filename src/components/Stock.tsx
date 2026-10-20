@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useScrollLock } from '../hooks/useScrollLock'
+// 각 Type 갖고오는 import 
+// 실행 X 검사할 때만 사용
+import type { Flower, StockByTab } from '../type'
 
 const tabs = ['메인꽃', '필러꽃', '꽃다발', '화분']
 
@@ -9,9 +12,12 @@ const DECREASE_INTERVAL = 30 * 60 * 1000
 
 function Stock() {
   const [activeTab, setActiveTab] = useState('메인꽃')
-  const [selected, setSelected] = useState(null)
+  // 선택 전에 null이 기본, 꽃을 누르면 Flower
+  // selected &&로 null 체크용
+  const [selected, setSelected] = useState<Flower | null>(null)
   // Supabase에서 불러온 재고 데이터 — 탭별로 분류된 객체
-  const [stock, setStock] = useState({})
+  // 각각 탭 이르 키, 꽃 목록 중 선택된 꽃(값) 갖고오는 객체
+  const [stock, setStock] = useState<StockByTab>({})
   // 데이터 로딩 상태
   const [loading, setLoading] = useState(true)
   useScrollLock(!!selected)
@@ -29,9 +35,11 @@ function Stock() {
     }
 
     // 불러온 데이터를 탭별로 분류
-    const grouped = {}
-    tabs.forEach(tab => { grouped[tab] = [] })
-    data.forEach(item => {
+    // 타입 붙으면 grouped[item.tab].push(item)로 item 검사
+    const grouped: StockByTab = {}
+    tabs.forEach(tab => { grouped[tab] = [] });
+    // 
+    (data as Flower[]).forEach(item => {
       if (grouped[item.tab]) {
         grouped[item.tab].push(item)
       }
